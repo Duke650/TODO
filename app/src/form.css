@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+body {
+    height: 100dvh;
+    background-color: #181824;
+    display: flex;
+    justify-content: center;
+}
+
+.my-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 4em;
+    gap: 1em;
+}
+
+.my-form-container input {
+
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: #25273c;
+    color: white;
+    padding: 10px 20px;
+}
+
+.my-form-container input:focus {
+    outline: none;
+}
+
+.add-btn {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: green;
+    font-size: 20px;
+    width: 2em;
+    margin: 10px;
+}
+
+form {
+    display: flex;
+    background-color: #25273c;
+    border: 1px solid #181824;
+    box-shadow: 10px 10px 19px -6px rgba(0,0,0,0.77);
+    margin: 5px 60px;
+    border-radius: 10px;
+    justify-content: space-between;
+
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-family: "Shadows Into Light", cursive;
+
+}
+
+
+.tasks {
+    background-color: #25273c;
+    box-shadow: 10px 10px 19px -6px rgba(0,0,0,0.77);
+    border-radius: 10px;
+    border: 1px solid #181824;
+
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    color: white;
+    font-size: 20px;
+    border-bottom: 1px solid rgb(103, 103, 107);
+}
+
+.circle-filled {
+    width: 30px;
+    border: 1px solid white;
+    border-radius: 50%;
+    background-color: white !important;
+    cursor: pointer;
+}
+
+.circle-empty {
+    width: 30px;
+    border: 1px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.delete-task {
+    background-color: red;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 5px;
+}
+
+.status {
+    display: flex;
+    gap: .5em;
+}
+
+span {
+    font-size: 12px;
+}
+
+.display {
+    cursor: pointer;
+}
+
+.display:active {
+    color: red;
+}
