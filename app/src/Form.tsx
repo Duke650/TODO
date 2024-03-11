@@ -17,12 +17,10 @@ const Form = () => {
     isCompleted: false,
   });
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [activeTasks, setActiveTasks] = useState<Task[]>([]);
-  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [idCounter, setIdCounter] = useState<number>(1);
-  const [showAll, setShowAll] = useState(true);
-  const [showActive, setShowActive] = useState(false);
-  const [showCompleted, setShowCompleted] = useState(false);
+  const [showAll, setShowAll] = useState<boolean>(true);
+  const [showActive, setShowActive] = useState<boolean>(false);
+  const [showCompleted, setShowCompleted] = useState<boolean>(false);
 
 
   const handleAddTask = (e: React.FormEvent) => {
@@ -33,53 +31,26 @@ const Form = () => {
   };
 
   const handleDelete = () => {
-    if (showActive) {
-      const newTasks = activeTasks.filter(task => task.isSelected !== true)
-      setActiveTasks(newTasks)
-    } else {
       const newTasks = tasks.filter((task) => task.isSelected !== true);
       setTasks(newTasks);
-    }
-    
   };
 
   const handleCheckBox = (taskId: number) => {
-    if (showCompleted) {
-      setCompletedTasks((prevTasks) => {
-        return prevTasks.map((task) => {
-          if (task.id === taskId) {
-            return { ...task, isSelected: !task.isSelected };
-          }
-          return task;
-        });
+    setTasks((prevTasks) => {
+      return prevTasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, isSelected: !task.isSelected };
+        }
+        return task;
       });
-    } else if (showActive) {
-      setActiveTasks((prevTasks) => {
-        return prevTasks.map((task) => {
-          if (task.id === taskId) {
-            return { ...task, isSelected: !task.isSelected };
-          }
-          return task;
-        });
-      });
-    } else {
-      setTasks((prevTasks) => {
-        return prevTasks.map((task) => {
-          if (task.id === taskId) {
-            return { ...task, isSelected: !task.isSelected };
-          }
-          return task;
-        });
-      });
-    }
+    });
   };
+  
 
   const handleShowActive = () => {
     setShowActive(true);
     setShowAll(false);
     setShowCompleted(false);
-    const updatedTasks = tasks.filter((task) => task.isCompleted !== true);
-    setActiveTasks(updatedTasks);
   };
 
   const handleShowAll = () => {
@@ -93,12 +64,7 @@ const Form = () => {
     setShowActive(false);
   };
 
-  const handleCompleteTask = (taskId: number) => {
-    setCompletedTasks((prev) => [
-      ...prev,
-      ...tasks.filter((task) => task.isSelected === true),
-    ]);
-
+  const handleCompleteTask = () => {
     const isCompleted = tasks.map(task => {
       if (task.isSelected) {
         return {...task, isCompleted: true}
@@ -112,9 +78,8 @@ const Form = () => {
 
 
   const handleClearCompleted = () => {
-    const newTasks = tasks.filter(task => !task.isSelected)
+    const newTasks = tasks.filter(task => !task.isCompleted)
     setTasks(newTasks)
-    setCompletedTasks([])
   }
 
   return (
@@ -153,10 +118,10 @@ const Form = () => {
               </div>
             ))}
 
-            {activeTasks.find((task) => task.isSelected === true) && (
+            {tasks.filter(task => !task.isCompleted).find((task) => task.isSelected === true) && (
               <div className="btn-container">
                 
-                <button onClick={() => handleCompleteTask(task.id)} className="mark-completed">Mark as completed</button>
+                <button onClick={() => handleCompleteTask()} className="mark-completed">Mark as completed</button>
                 <button
                   onClick={() => {
                     handleDelete();
@@ -167,13 +132,13 @@ const Form = () => {
                 </button>
               </div>
             )}
-            <div className="form-footer">
-              <span>{activeTasks.length} task(s) remaining</span>
+            {tasks && <div className="form-footer">
+              <span>{tasks.filter(task => !task.isCompleted).length} task(s) remaining</span>
               <div className="status">
                 <span className="display" onClick={handleShowAll}>
                   All
                 </span>
-                <span className="display" onClick={handleShowActive}>
+                <span className={`display ${showActive && "activeActive"}`} onClick={handleShowActive}>
                   Active
                 </span>
                 <span className="display" onClick={handleShowCompleted}>
@@ -181,7 +146,8 @@ const Form = () => {
                 </span>
               </div>
               <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
-            </div>
+            </div>}
+            
           </div>
         )}
 
@@ -193,8 +159,8 @@ const Form = () => {
                 <p>{task.name}</p>
               </div>
             ))}
-            <div className="form-footer">
-              <span>{completedTasks.length} task(s) completed</span>
+            {tasks && <div className="form-footer">
+              <span>{tasks.filter(task => task.isCompleted).length} task(s) completed</span>
               <div className="status">
                 <span className="display" onClick={handleShowAll}>
                   All
@@ -202,12 +168,13 @@ const Form = () => {
                 <span className="display" onClick={handleShowActive}>
                   Active
                 </span>
-                <span className="display" onClick={handleShowCompleted}>
+                <span className={`display ${showCompleted && "completedActive"}`} onClick={handleShowCompleted}>
                   completed
                 </span>
               </div>
               <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
-            </div>
+            </div>}
+            
           </div>
         )}
 
@@ -216,7 +183,7 @@ const Form = () => {
           <Reorder.Group values={tasks} onReorder={(reorderedTasks) => setTasks(reorderedTasks)}>
             {tasks.map((task, i) => (
               <Reorder.Item value={task} key={i}>
-              <div className={`task ${task.isCompleted ? "completed": ""}`} key={task.id}>
+              <div className={`task ${task.isCompleted ? "completed": ""} ${task.isCompleted && "task-done"}`} key={task.id}>
                 <p
                   className={task.isSelected ? "circle-filled" : "circle-empty"}
                   onClick={() => {
@@ -231,7 +198,7 @@ const Form = () => {
             {tasks.find((task) => task.isSelected === true) && (
               <div className="btn-container">
                 
-                <button onClick={() => handleCompleteTask(task.id)} className="mark-completed">Mark as completed</button>
+                <button onClick={() => handleCompleteTask()} className="mark-completed">Mark as completed</button>
                 <button
                   onClick={() => {
                     handleDelete();
@@ -242,21 +209,24 @@ const Form = () => {
                 </button>
               </div>
             )}
+            {tasks && 
             <div className="form-footer">
-              <span>{tasks.length} task(s) remaining</span>
-              <div className="status">
-                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowAll}>
-                  All
-                </span>
-                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowActive}>
-                  Active
-                </span>
-                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowCompleted}>
-                  completed
-                </span>
-              </div>
-              <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
+            <span>{tasks.length} task(s) remaining</span>
+            <div className="status">
+              <span className={`display ${showAll && "allActive"}`} onClick={handleShowAll}>
+                All
+              </span>
+              <span className="display" onClick={handleShowActive}>
+                Active
+              </span>
+              <span className="display" onClick={handleShowCompleted}>
+                completed
+              </span>
             </div>
+            <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
+          </div>
+            }
+            
           </div>
         )}
       </div>

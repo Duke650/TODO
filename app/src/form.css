@@ -72,7 +72,7 @@ h1 {
 
 
 .tasks {
-    background-color: #25273c;
+    /* background-color: #25273c; */
     box-shadow: 10px 10px 19px -6px rgba(0,0,0,0.77);
     border-radius: 10px;
     border: 1px solid #181824;
@@ -93,6 +93,7 @@ h1 {
     border: 1px solid white;
     border-radius: 50%;
     background-color: white !important;
+    transition: 400ms;
     cursor: pointer;
 }
 
@@ -101,6 +102,7 @@ h1 {
     border: 1px solid white;
     border-radius: 50%;
     cursor: pointer;
+    transition: 400ms;
 }
 
 .delete-task {
@@ -117,6 +119,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     color: white;
+    background-color: #25273c;
     padding: 5px;
 }
 
@@ -131,15 +134,13 @@ span {
 
 .display {
     cursor: pointer;
-}
-
-.display:active {
-    color: red;
+    color: rgba(255, 255, 255, 0.434);
 }
 
 .btn-container {
     display: flex;
     justify-content: space-between;
+    background-color: #181824;
     padding: 10px;
 }
 
@@ -163,4 +164,27 @@ span {
 
 .completed-tasks {
     justify-content: center;
+}
+
+.allActive {
+    color: white;
+    font-weight: bold;
+}
+
+.activeActive {
+    color: white;
+    font-weight: bold;
+}
+
+.completedActive {
+    color: white;
+    font-weight: bold;
+}
+
+.task {
+    background-color: #25273c;
+}
+
+.task-done {
+    background-color: #4d4d62;
 }
