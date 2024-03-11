@@ -13,7 +13,11 @@ body {
     background-color: #181824;
     display: flex;
     justify-content: center;
+    background-image: url("./img/todo background.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
 }
+
 
 .my-form-container {
     display: flex;
@@ -133,4 +137,32 @@ span {
 
 .display:active {
     color: red;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.mark-completed {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: yellow;
+    font-weight: bold;
+}
+
+.clear {
+    cursor: pointer;
+}
+
+.completed {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.completed-tasks {
+    justify-content: center;
 }

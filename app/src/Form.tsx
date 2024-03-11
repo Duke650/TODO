@@ -23,7 +23,10 @@ const Form = () => {
   const [showActive, setShowActive] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
 
+  console.log('completedTasks :>> ', completedTasks);
+
   console.log('tasks :>> ', tasks);
+
 
 
   const handleAddTask = (e: React.FormEvent) => {
@@ -34,19 +37,45 @@ const Form = () => {
   };
 
   const handleDelete = () => {
-    const newTasks = tasks.filter((task) => task.isSelected !== true);
-    setTasks(newTasks);
+    if (showActive) {
+      const newTasks = activeTasks.filter(task => task.isSelected !== true)
+      setActiveTasks(newTasks)
+    } else {
+      const newTasks = tasks.filter((task) => task.isSelected !== true);
+      setTasks(newTasks);
+    }
+    
   };
 
   const handleCheckBox = (taskId: number) => {
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, isSelected: !task.isSelected };
-        }
-        return task;
+    if (showCompleted) {
+      setCompletedTasks((prevTasks) => {
+        return prevTasks.map((task) => {
+          if (task.id === taskId) {
+            return { ...task, isSelected: !task.isSelected };
+          }
+          return task;
+        });
       });
-    });
+    } else if (showActive) {
+      setActiveTasks((prevTasks) => {
+        return prevTasks.map((task) => {
+          if (task.id === taskId) {
+            return { ...task, isSelected: !task.isSelected };
+          }
+          return task;
+        });
+      });
+    } else {
+      setTasks((prevTasks) => {
+        return prevTasks.map((task) => {
+          if (task.id === taskId) {
+            return { ...task, isSelected: !task.isSelected };
+          }
+          return task;
+        });
+      });
+    }
   };
 
   const handleShowActive = () => {
@@ -63,13 +92,33 @@ const Form = () => {
     setShowCompleted(false);
   };
 
-  const handleCompletedTasks = () => {
+  const handleShowCompleted = () => {
     setShowCompleted(true);
     setShowActive(false);
   };
 
-  const handleCompleteTask = () => {
-    setCompletedTasks(tasks.filter(task => task.isSelected === true))
+  const handleCompleteTask = (taskId: number) => {
+    setCompletedTasks((prev) => [
+      ...prev,
+      ...tasks.filter((task) => task.isSelected === true),
+    ]);
+
+    const isCompleted = tasks.map(task => {
+      if (task.isSelected) {
+        return {...task, isCompleted: true}
+      } else {
+        return task
+      }
+      
+    })
+    setTasks(isCompleted)
+  };
+
+
+  const handleClearCompleted = () => {
+    const newTasks = tasks.filter(task => !task.isSelected)
+    setTasks(newTasks)
+    setCompletedTasks([])
   }
 
   return (
@@ -109,7 +158,9 @@ const Form = () => {
             ))}
 
             {activeTasks.find((task) => task.isSelected === true) && (
-              <div>
+              <div className="btn-container">
+                
+                <button onClick={() => handleCompleteTask(task.id)} className="mark-completed">Mark as completed</button>
                 <button
                   onClick={() => {
                     handleDelete();
@@ -118,11 +169,10 @@ const Form = () => {
                 >
                   Delete
                 </button>
-                <button onClick={handleCompleteTask}>Mark as completed</button>
               </div>
             )}
             <div className="form-footer">
-              <span>{tasks.length} tasks remaining</span>
+              <span>{activeTasks.length} task(s) remaining</span>
               <div className="status">
                 <span className="display" onClick={handleShowAll}>
                   All
@@ -130,44 +180,25 @@ const Form = () => {
                 <span className="display" onClick={handleShowActive}>
                   Active
                 </span>
-                <span className="display" onClick={handleCompletedTasks}>
+                <span className="display" onClick={handleShowCompleted}>
                   completed
                 </span>
               </div>
-              <span>Clear Completed</span>
+              <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
             </div>
           </div>
-        ) }
+        )}
 
         {showCompleted && (
           <div className="tasks">
             {completedTasks.map((task) => (
-              <div className="task" key={task.id}>
-                <p
-                  className={task.isSelected ? "circle-filled" : "circle-empty"}
-                  onClick={() => {
-                    handleCheckBox(task.id);
-                  }}
-                ></p>
+              <div className="task completed-tasks" key={task.id}>
+              
                 <p>{task.name}</p>
               </div>
             ))}
-
-            {completedTasks.find((task) => task.isSelected === true) && (
-              <div>
-                <button
-                  onClick={() => {
-                    handleDelete();
-                  }}
-                  className="delete-task"
-                >
-                  Delete
-                </button>
-                <button onClick={handleCompleteTask}>Mark as completed</button>
-              </div>
-            )}
             <div className="form-footer">
-              <span>{tasks.length} tasks remaining</span>
+              <span>{completedTasks.length} task(s) completed</span>
               <div className="status">
                 <span className="display" onClick={handleShowAll}>
                   All
@@ -175,11 +206,11 @@ const Form = () => {
                 <span className="display" onClick={handleShowActive}>
                   Active
                 </span>
-                <span className="display" onClick={handleCompletedTasks}>
+                <span className="display" onClick={handleShowCompleted}>
                   completed
                 </span>
               </div>
-              <span>Clear Completed</span>
+              <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
             </div>
           </div>
         )}
@@ -187,7 +218,7 @@ const Form = () => {
         {showAll && !showActive && !showCompleted && (
           <div className="tasks">
             {tasks.map((task) => (
-              <div className="task" key={task.id}>
+              <div className={`task ${task.isCompleted ? "completed": ""}`} key={task.id}>
                 <p
                   className={task.isSelected ? "circle-filled" : "circle-empty"}
                   onClick={() => {
@@ -199,7 +230,9 @@ const Form = () => {
             ))}
 
             {tasks.find((task) => task.isSelected === true) && (
-              <div>
+              <div className="btn-container">
+                
+                <button onClick={() => handleCompleteTask(task.id)} className="mark-completed">Mark as completed</button>
                 <button
                   onClick={() => {
                     handleDelete();
@@ -208,11 +241,10 @@ const Form = () => {
                 >
                   Delete
                 </button>
-                <button onClick={handleCompleteTask}>Mark as completed</button>
               </div>
             )}
             <div className="form-footer">
-              <span>{tasks.length} tasks remaining</span>
+              <span>{tasks.length} task(s) remaining</span>
               <div className="status">
                 <span className="display" onClick={handleShowAll}>
                   All
@@ -220,11 +252,11 @@ const Form = () => {
                 <span className="display" onClick={handleShowActive}>
                   Active
                 </span>
-                <span className="display" onClick={handleCompletedTasks}>
+                <span className="display" onClick={handleShowCompleted}>
                   completed
                 </span>
               </div>
-              <span>Clear Completed</span>
+              <span onClick={handleClearCompleted} className="clear">Clear Completed</span>
             </div>
           </div>
         )}
