@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Reorder } from "framer-motion";
 import "./form.css";
 
 interface Task {
@@ -22,11 +23,6 @@ const Form = () => {
   const [showAll, setShowAll] = useState(true);
   const [showActive, setShowActive] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
-
-  console.log('completedTasks :>> ', completedTasks);
-
-  console.log('tasks :>> ', tasks);
-
 
 
   const handleAddTask = (e: React.FormEvent) => {
@@ -145,7 +141,7 @@ const Form = () => {
 
         {showActive && !showCompleted && (
           <div className="tasks">
-            {activeTasks.map((task) => (
+            {tasks.filter(task => !task.isCompleted).map((task) => (
               <div className="task" key={task.id}>
                 <p
                   className={task.isSelected ? "circle-filled" : "circle-empty"}
@@ -191,7 +187,7 @@ const Form = () => {
 
         {showCompleted && (
           <div className="tasks">
-            {completedTasks.map((task) => (
+            {tasks.filter(task => task.isCompleted).map((task) => (
               <div className="task completed-tasks" key={task.id}>
               
                 <p>{task.name}</p>
@@ -217,7 +213,9 @@ const Form = () => {
 
         {showAll && !showActive && !showCompleted && (
           <div className="tasks">
-            {tasks.map((task) => (
+          <Reorder.Group values={tasks} onReorder={(reorderedTasks) => setTasks(reorderedTasks)}>
+            {tasks.map((task, i) => (
+              <Reorder.Item value={task} key={i}>
               <div className={`task ${task.isCompleted ? "completed": ""}`} key={task.id}>
                 <p
                   className={task.isSelected ? "circle-filled" : "circle-empty"}
@@ -227,8 +225,9 @@ const Form = () => {
                 ></p>
                 <p>{task.name}</p>
               </div>
+              </Reorder.Item>
             ))}
-
+            </Reorder.Group>
             {tasks.find((task) => task.isSelected === true) && (
               <div className="btn-container">
                 
@@ -246,13 +245,13 @@ const Form = () => {
             <div className="form-footer">
               <span>{tasks.length} task(s) remaining</span>
               <div className="status">
-                <span className="display" onClick={handleShowAll}>
+                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowAll}>
                   All
                 </span>
-                <span className="display" onClick={handleShowActive}>
+                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowActive}>
                   Active
                 </span>
-                <span className="display" onClick={handleShowCompleted}>
+                <span className={`display ${showAll && "footerActive"}`} onClick={handleShowCompleted}>
                   completed
                 </span>
               </div>
