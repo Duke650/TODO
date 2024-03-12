@@ -180,9 +180,7 @@ const Form = () => {
 
         {showAll && !showActive && !showCompleted && (
           <div className="tasks">
-          <Reorder.Group values={tasks} onReorder={(reorderedTasks) => setTasks(reorderedTasks)}>
             {tasks.map((task, i) => (
-              <Reorder.Item value={task} key={i}>
               <div className={`task ${task.isCompleted ? "completed": ""} ${task.isCompleted && "task-done"}`} key={task.id}>
                 <p
                   className={task.isSelected ? "circle-filled" : "circle-empty"}
@@ -192,9 +190,7 @@ const Form = () => {
                 ></p>
                 <p>{task.name}</p>
               </div>
-              </Reorder.Item>
             ))}
-            </Reorder.Group>
             {tasks.find((task) => task.isSelected === true) && (
               <div className="btn-container">
                 
